@@ -54,7 +54,7 @@ export const P2EGAME_CONTRACT_ADDRESS = "${p2eGame.address}";
     `;
 
   fs.writeFileSync(
-    path.join(__dirname, "../../support/contract_addresses.js"),
+    path.join(__dirname, "../../support/contract_addresses.ts"),
     config
   );
 }

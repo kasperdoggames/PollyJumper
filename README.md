@@ -42,3 +42,13 @@ SIGNER_WALLET_KEY=
 
 - `npm i`
 - `npm run dev`
+
+## Contracts
+
+The three Contracts are deployed to Polygon Testnet.
+
+GameToken deployed to: `0x8C45664D025E6Ad8A736aD710D7742d04e174700`
+
+GameNFTToken deployed to: `0x929e9F17282C4126A727773722250De046b7B41f`
+
+P2EGame deployed to: `0xe5962FEf7e5dB9fF80F2fe0D128EA038826D1a11`

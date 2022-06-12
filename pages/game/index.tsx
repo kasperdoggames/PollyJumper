@@ -346,7 +346,7 @@ const Home: NextPage = () => {
                   <div className="mt-5 sm:mt-6">
                     <button
                       type="button"
-                      className="inline-flex justify-center w-full px-4 py-4 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm font-splatch hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                      className="inline-flex justify-center w-full px-4 py-4 text-base font-medium text-white bg-pink-500 border border-transparent rounded-md shadow-sm font-splatch hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-400 sm:text-sm"
                       onClick={() => setShowNFTMintedDialog(false)}
                     >
                       Let&apos;s use it!
@@ -397,7 +397,7 @@ const Home: NextPage = () => {
                         most importantly your ticket to play the game.
                       </div>
                       <button
-                        className="px-12 pt-4 pb-6 border-4 border-white drp drop-shadow-2xl shadow-white bg-violet-600 rounded-xl hover:bg-violet-500"
+                        className="px-12 pt-4 pb-6 bg-pink-500 border-4 border-white drp drop-shadow-2xl shadow-white rounded-xl hover:bg-pink-400"
                         onClick={handleMintNFT}
                       >
                         <img

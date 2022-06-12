@@ -17,6 +17,8 @@ const dev = process.env.NODE_ENV !== "production";
 const nextApp = next({ dev });
 const handle = nextApp.getRequestHandler();
 
+const CHECK_UPKEEP_SECONDS = 5;
+
 type Player = {
   playerId: string;
   walletAddress?: string | undefined;
@@ -119,6 +121,24 @@ nextApp.prepare().then(() => {
   // call contract for state
   const p2eGameContract = getP2EGameContract() as any;
 
+  const checkContractGameLoop = () => {
+    setTimeout(async () => {
+      if (p2eGameContract) {
+        const checkUpkeep = await p2eGameContract.checkUpkeep([]);
+        const needToPerformUpkeep = checkUpkeep[0];
+        console.log({ needToPerformUpkeep });
+        if (needToPerformUpkeep) {
+          console.log("Performing Upkeep");
+          const tx = await p2eGameContract.performUpkeep([]);
+          const receipt = await tx.wait();
+          console.log({ receipt });
+        }
+      }
+
+      checkContractGameLoop();
+    }, CHECK_UPKEEP_SECONDS * 1000);
+  };
+
   const resetGame = (levelName: string, oldGameId: string) => {
     const levelData = gameRooms.get(levelName);
     if (!levelData) {
@@ -176,7 +196,6 @@ nextApp.prepare().then(() => {
 
   const getWinners = async () => {
     if (p2eGameContract) {
-      console.log("getWinners!!!!");
       const filterPlayerWon = p2eGameContract.filters.PlayerWon(null);
       const items = await p2eGameContract.queryFilter(
         filterPlayerWon,
@@ -513,6 +532,7 @@ nextApp.prepare().then(() => {
   server.listen(app.get("port"), async () => {
     // get leaderboard data for local cached copy
     await getWinners();
+    checkContractGameLoop();
     console.log(`Listening on ${app.get("port")}`);
   });
 });

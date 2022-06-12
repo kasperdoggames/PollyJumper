@@ -20,7 +20,7 @@ const Home: NextPage = () => {
               </p>
               <div className="w-full p-12 space-y-8">
                 <div className="flex space-x-8">
-                  <div className="flex flex-col items-center justify-between pt-4 pb-6 border-4 border-white h-60 w-60 drp drop-shadow-2xl shadow-white bg-violet-600 rounded-xl hover:bg-violet-500">
+                  <div className="flex flex-col items-center justify-between pt-4 pb-6 bg-pink-500 border-4 border-white h-60 w-60 drp drop-shadow-2xl shadow-white rounded-xl hover:bg-pink-500">
                     <img
                       className=""
                       src="/assets/polly_avatar.png"
@@ -31,10 +31,8 @@ const Home: NextPage = () => {
                     </div>
                   </div>
                   <div className="w-2/3 py-4 space-y-8">
-                    <p className="text-xl font-splatch text-violet-600">
-                      Step 1
-                    </p>
-                    <ul className="leading-10 font-splatch text-violet-600">
+                    <p className="text-xl text-pink-500 font-splatch">Step 1</p>
+                    <ul className="leading-10 text-pink-500 font-splatch">
                       <li>Mint your unique and personal Polly NFT.</li>{" "}
                       <li>
                         Minting your NFT gives you 10 $COOL tokens and access to

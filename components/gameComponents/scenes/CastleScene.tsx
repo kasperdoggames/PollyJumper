@@ -46,52 +46,63 @@ export default class CastleScene extends Phaser.Scene {
 
   preload() {
     // Load all assets for level
-    this.load.atlas("polly", "assets/polly.png", "assets/polly.json");
+    this.load.atlas(
+      "polly",
+      "/assets/player/polly.png",
+      "/assets/player/polly.json"
+    );
 
     // tilemaps
-    this.load.image("castle_tiles", "assets/castle_tileset.png");
-    this.load.tilemapTiledJSON("tilemap", "assets/castle_scene.json");
+    this.load.image("castle_tiles", "/assets/castle_level/castle_tileset.png");
+    this.load.tilemapTiledJSON(
+      "castle_level",
+      "/assets/castle_level/castle_scene.json"
+    );
 
     // coins and platforms
-    this.load.atlas("coin", "assets/coin.png", "assets/coin.json");
-    this.load.image("platformA", "assets/platformA.png");
-    this.load.image("bell", "assets/bell.png");
+    this.load.atlas("coin", "/assets/coin.png", "/assets/coin.json");
+    this.load.image("bell", "/assets/bell.png");
 
     // acid
-    this.load.spritesheet("acidTileSprites", "assets/acid_tileset.png", {
-      frameWidth: 70,
-      frameHeight: 70,
-    });
+    this.load.spritesheet(
+      "acidTileSprites",
+      "/assets/castle_level/acid_tileset.png",
+      {
+        frameWidth: 70,
+        frameHeight: 70,
+      }
+    );
 
     // parallax
-    this.load.image("bg_1", "assets/volcano_bg.png");
+    this.load.image("bg_1", "/assets/castle_level/castle_bg.png");
 
     // load audio
-    this.load.audio("castleMusic", "assets/castleMusic.mp3");
-    this.load.audio("acidSplash", "assets/acidSplash.ogg");
-    this.load.audio("coinPickup", "assets/coinPickup.ogg");
-    this.load.audio("bell", "assets/bell.mp3");
+    this.load.audio("castleMusic", "/assets/castle_level/castleMusic.mp3");
+    this.load.audio("acidSplash", "/assets/castle_level/acidSplash.ogg");
+    this.load.audio("coinPickup", "/assets/coinPickup.ogg");
+    this.load.audio("bell", "/assets/bell.mp3");
   }
 
   create() {
     // create coins class
     this.coins = new Coins(this);
     // create the tile map instance
-    const map = this.make.tilemap({ key: "tilemap" });
+    const map = this.make.tilemap({ key: "castle_level" });
     // add the tileset to the map
     const tileset = map.addTilesetImage("castle_tileset", "castle_tiles");
     // create the ground layer from the loaded tileset
-    console.log({ tileset });
     const ground = map.createLayer("ground", tileset);
-    console.log({ ground });
+    map.createLayer("ground2", tileset);
+    map.createLayer("ground3", tileset).setDepth(-1);
+
     // set collisions based on custom value on the tilesheet data
     ground.setCollisionByProperty({ collides: true });
 
-    // testing parallax
+    // parallax
     this.bg_1 = this.add.tileSprite(0, 0, 0, 0, "bg_1");
     this.bg_1.setOrigin(0, 0);
     this.bg_1.setScrollFactor(0);
-    this.bg_1.setDepth(-1);
+    this.bg_1.setDepth(-2);
 
     // convert the layer to matter physics for ground
     this.matter.world.convertTilemapLayer(ground);
@@ -134,14 +145,6 @@ export default class CastleScene extends Phaser.Scene {
         case "coin":
           const coinType: CoinType = element.properties[0]?.value;
           this.coins.addCoin(this, x, y, coinType);
-          break;
-        case "platformA":
-          const platformA = createPlatform(this, x, y, "platformA");
-          moveVertical(this, platformA);
-          break;
-        case "platformB":
-          const platformB = createPlatform(this, x, y, "platformA");
-          moveHorizontal(this, platformB);
           break;
         default:
           break;
@@ -287,6 +290,7 @@ export default class CastleScene extends Phaser.Scene {
       this.player.stateMachine.step();
       // update acid
       this.dangerZone.update();
+      this.bg_1.tilePositionY = this.cameras.main.scrollY * 0.3;
     }
   }
 }

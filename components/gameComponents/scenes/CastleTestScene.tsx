@@ -11,7 +11,6 @@ export default class CastleTestScene extends Phaser.Scene {
   otherPlayers: Map<string, Phaser.GameObjects.Sprite> = new Map();
   music!: Phaser.Sound.BaseSound;
   bg_1!: Phaser.GameObjects.TileSprite;
-  bg_2!: Phaser.GameObjects.Image;
   start!: { x: number; y: number };
   loading: boolean = true;
   timer!: Phaser.Time.TimerEvent;
@@ -23,10 +22,6 @@ export default class CastleTestScene extends Phaser.Scene {
 
   init() {
     this.level = "castleTest";
-    // Load UI
-    // this.scene.launch("ui");
-    // this.scene.launch("dialog");
-    // init the keyboard inputs
     this.cursors = this.input.keyboard.createCursorKeys();
   }
 
@@ -61,7 +56,6 @@ export default class CastleTestScene extends Phaser.Scene {
 
     // parallax
     this.load.image("bg_1", "/assets/castle_level/castle_bg.png");
-    this.load.image("bg_2", "/assets/castle_level/castle_arch.png");
 
     // load audio
     this.load.audio("castleMusic", "/assets/castle_level/castleMusic.mp3");
@@ -125,7 +119,6 @@ export default class CastleTestScene extends Phaser.Scene {
             .setName("finish");
           break;
         case "acid":
-          console.log("acid to include");
           this.dangerZone = new Acid(this, x, y);
           break;
         default:

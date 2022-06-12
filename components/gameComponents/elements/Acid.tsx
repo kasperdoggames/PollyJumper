@@ -47,7 +47,7 @@ export class Acid {
 
     this.acidpart = scene.add.rectangle(0, 0, 1400, 1040, 0x80ca20);
     this.acidpart.setDepth(1);
-    this.acidpart.setPosition(x, y + 500);
+    this.acidpart.setPosition(x, y + 520);
   }
 
   meltSound() {

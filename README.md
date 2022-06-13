@@ -55,5 +55,5 @@ P2EGame deployed to: `0xe5962FEf7e5dB9fF80F2fe0D128EA038826D1a11`
 
 ## IPFS
 
-NFT Images: ipfs://bafybeiajj5pj4qec3tr24yshzjiylhosu3ag3roln3unbb3pizfhw4vhm4/
-NFT Metadata: ipfs://bafybeia2pnozv634ypculjdyqwzmytmig57iz6u7y5iojee3qd22gamyze/
+NFT Images: ipfs://bafybeiafdnqwc7iwpji5ze2udyf3jtk6b4fl5ydmj4u7mf4z3kul7gacuq/
+NFT Metadata: ipfs://bafybeiaffsmzgb3xkth42qqtfuvbbr5caekzyvqugznkjdijhkfk2o7ezy/

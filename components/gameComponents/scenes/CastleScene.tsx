@@ -1,11 +1,6 @@
 import "phaser";
 import { Coins, CoinType } from "../elements/Coin";
 import Acid from "../elements/Acid";
-import {
-  createPlatform,
-  moveHorizontal,
-  moveVertical,
-} from "../elements/Platform";
 import { PlayerController } from "../playerController";
 import SocketClient from "../SocketClient";
 import { sharedInstance as events } from "../EventCenter";

@@ -1,7 +1,7 @@
 import { sharedInstance as events } from "../EventCenter";
 import { CustomGameScene } from "../SocketClient";
 
-export type CoinType = "dai" | "chainlink" | "matic" | "eth";
+export type CoinType = "dai" | "chainlink" | "matic" | "eth" | "encode";
 
 export class Coins {
   coins: Map<string, Phaser.Physics.Matter.Sprite> = new Map();
@@ -9,13 +9,17 @@ export class Coins {
 
   constructor(scene: CustomGameScene) {
     // Setup coins
-    ["dai", "chainlink", "matic", "eth"].map((coinType) => {
+    ["dai", "chainlink", "matic", "eth", "encode"].map((coinType) => {
       scene.data.set(coinType, 0);
     });
 
     // add pickup sound
     try {
       this.pickupSound = scene.sound.get("coinPickup");
+      if (!this.pickupSound) {
+        scene.sound.add("coinPickup");
+        this.pickupSound = scene.sound.get("coinPickup");
+      }
     } catch (err) {
       console.log(err);
       scene.sound.add("coinPickup");
@@ -59,12 +63,12 @@ export class Coins {
       repeat: -1,
     });
     scene.anims.create({
-      key: "EthSpin",
+      key: "EncodeSpin",
       frameRate: 5,
       frames: scene.anims.generateFrameNames("coin", {
         start: 1,
         end: 12,
-        prefix: "coinSpinEth00",
+        prefix: "coinSpinEncode00",
         suffix: ".png",
         zeroPad: 2,
       }),
@@ -82,10 +86,6 @@ export class Coins {
     coin.setDisplaySize(70, 70);
     coin.setName("coin");
     switch (coinType) {
-      case "eth":
-        coin.anims.play("EthSpin", true);
-        coin.setData("id", `EthCoin${currentCoinLength + 1}`);
-        break;
       case "matic":
         coin.anims.play("MaticSpin", true);
         coin.setData("id", `MaticCoin${currentCoinLength + 1}`);
@@ -97,6 +97,10 @@ export class Coins {
       case "dai":
         coin.anims.play("spin", true);
         coin.setData("id", `DaiCoin${currentCoinLength + 1}`);
+        break;
+      case "encode":
+        coin.anims.play("EncodeSpin", true);
+        coin.setData("id", `EncodeCoin${currentCoinLength + 1}`);
         break;
       default:
         break;
@@ -111,7 +115,9 @@ export class Coins {
     const updated = current + 1;
     scene.data.set(coinType, updated);
     events.emit("coinCollected", { coinType, coinCount: updated });
-    scene.socketClient.socket.emit("coinCollected", coin.getData("id"));
+    if (scene.socketClient) {
+      scene.socketClient.socket.emit("coinCollected", coin.getData("id"));
+    }
     this.playSound();
     coin.destroy();
   }
@@ -122,6 +128,8 @@ export class Coins {
   }
 
   playSound() {
-    this.pickupSound.play();
+    if (this.pickupSound) {
+      this.pickupSound.play();
+    }
   }
 }

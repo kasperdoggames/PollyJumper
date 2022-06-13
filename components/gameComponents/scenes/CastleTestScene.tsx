@@ -1,7 +1,9 @@
 import "phaser";
 import Acid from "../elements/Acid";
 import { PlayerController } from "../playerController";
+import { Coins, CoinType } from "../elements/Coin";
 import { sharedInstance as events } from "../EventCenter";
+import SocketClient from "../SocketClient";
 
 type gameState = "waiting" | "running" | "end";
 
@@ -14,6 +16,8 @@ export default class CastleTestScene extends Phaser.Scene {
   start!: { x: number; y: number };
   loading: boolean = true;
   timer!: Phaser.Time.TimerEvent;
+  coins!: Coins;
+  socketClient!: SocketClient;
   gameId!: string;
   level!: string;
   gameState: gameState = "waiting";
@@ -65,6 +69,7 @@ export default class CastleTestScene extends Phaser.Scene {
   }
 
   create() {
+    this.coins = new Coins(this);
     // create the tile map instance
     const map = this.make.tilemap({ key: "castle_level" });
     // add the tileset to the map
@@ -121,6 +126,10 @@ export default class CastleTestScene extends Phaser.Scene {
         case "acid":
           this.dangerZone = new Acid(this, x, y);
           break;
+        case "coin":
+          const coinType: CoinType = element.properties[0]?.value;
+          this.coins.addCoin(this, x, y, coinType);
+          break;
         default:
           break;
       }
@@ -142,6 +151,10 @@ export default class CastleTestScene extends Phaser.Scene {
         if (other.gameObject?.name === "acidSprite") {
           this.dangerZone.meltSound();
           this.player.stateMachine.transition("melt");
+          return;
+        }
+        if (other.gameObject?.name === "coin") {
+          this.coins.pickupCoin(this, other.gameObject);
           return;
         }
         if (other.gameObject?.name === "finish") {

@@ -383,6 +383,136 @@
                  "width":0,
                  "x":2115.94,
                  "y":6430.64
+                }, 
+                {
+                 "height":70,
+                 "id":6,
+                 "name":"coin",
+                 "properties":[
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"encode"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":70,
+                 "x":416.00363719027,
+                 "y":6469.65219368038
+                }, 
+                {
+                 "height":0,
+                 "id":7,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":161.400318254149,
+                 "y":5921.8004091839
+                }, 
+                {
+                 "height":70,
+                 "id":8,
+                 "name":"coin",
+                 "properties":[
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"encode"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":70,
+                 "x":699.257785860423,
+                 "y":6184.5953625824
+                }, 
+                {
+                 "height":70,
+                 "id":9,
+                 "name":"coin",
+                 "properties":[
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"encode"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":70,
+                 "x":628.787224369175,
+                 "y":5827.69606728802
+                }, 
+                {
+                 "height":70,
+                 "id":10,
+                 "name":"coin",
+                 "properties":[
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"encode"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":70,
+                 "x":103.667879063423,
+                 "y":5768.59172539213
+                }, 
+                {
+                 "height":70,
+                 "id":11,
+                 "name":"coin",
+                 "properties":[
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"encode"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":70,
+                 "x":837.925664923846,
+                 "y":4997.96203682655
+                }, 
+                {
+                 "height":70,
+                 "id":12,
+                 "name":"coin",
+                 "properties":[
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"encode"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":70,
+                 "x":1042.51761764037,
+                 "y":4566.04569220277
+                }, 
+                {
+                 "height":70,
+                 "id":13,
+                 "name":"coin",
+                 "properties":[
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"encode"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":70,
+                 "x":167.318708797454,
+                 "y":3306.6685610366
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -391,7 +521,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":6,
+ "nextobjectid":14,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.8.4",

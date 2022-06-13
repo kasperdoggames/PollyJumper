@@ -214,9 +214,9 @@ export default class CastleTestScene extends Phaser.Scene {
         (a, b) => b.y - a.y
       );
 
-      if (ordered.length === 0 && this.gameState === "running") {
-        // emit end game as all players dead
+      if (ordered.length === 0) {
         console.log("end game request");
+        window.location.reload();
         return;
       }
       // follow highest player

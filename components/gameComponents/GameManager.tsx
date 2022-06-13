@@ -3,7 +3,6 @@ import "phaser";
 import UI from "./scenes/UIScene";
 import CastleScene from "./scenes/CastleScene";
 import Dialog from "./scenes/DialogScene";
-import CastleTestScene from "./scenes/CastleTestScene";
 
 let game: Phaser.Game;
 

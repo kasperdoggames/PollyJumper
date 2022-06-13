@@ -90,7 +90,7 @@ export default class SocketClient {
         if (this.checkSetTimer(otherPlayer.playerId, index)) {
           return;
         }
-        const player = this.scene.add.sprite(0, 0, "polly", "idle_01.png");
+        const player = this.scene.add.sprite(0, 0, "polly", "idle0001.png");
         player.setAlpha(0.5);
         player.setTintFill(0xffffff);
         player.setDepth(-1);
@@ -134,7 +134,7 @@ export default class SocketClient {
           if (this.checkSetTimer(otherPlayer.playerId, index)) {
             return;
           }
-          const player = this.scene.add.sprite(0, 0, "polly", "idle_01.png");
+          const player = this.scene.add.sprite(0, 0, "polly", "idle0001.png");
           player.setAlpha(0.5);
           this.scene.otherPlayers.set(otherPlayer.playerId, player);
         });

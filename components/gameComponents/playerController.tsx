@@ -26,7 +26,7 @@ export class PlayerController {
 
     // create a player instance from the spritesheet
     this.sprite = scene.matter.add
-      .sprite(0, 0, "polly", "idle_01.png")
+      .sprite(0, 0, "polly", "idle0001.png")
       .setFixedRotation();
 
     // add a name for the player

@@ -43,6 +43,10 @@ SIGNER_WALLET_KEY=
 - `npm i`
 - `npm run dev`
 
+## Deployment
+
+The application is hosted on [heroku](https://www.heroku.com/) and is auto deloyed using a GH Actions [workflow](https://github.com/kasperdoggames/PollyJumper/blob/main/.github/workflows/main.yml)
+
 ## Contracts
 
 The three Contracts are deployed to Polygon Testnet.

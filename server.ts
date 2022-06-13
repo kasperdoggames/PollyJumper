@@ -126,7 +126,6 @@ nextApp.prepare().then(() => {
       if (p2eGameContract) {
         const checkUpkeep = await p2eGameContract.checkUpkeep([]);
         const needToPerformUpkeep = checkUpkeep[0];
-        console.log({ needToPerformUpkeep });
         if (needToPerformUpkeep) {
           console.log("Performing Upkeep");
           const tx = await p2eGameContract.performUpkeep([]);

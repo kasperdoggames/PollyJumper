@@ -1,8 +1,5 @@
 import { useEffect } from "react";
 import "phaser";
-import UI from "./scenes/UIScene";
-import CastleScene from "./scenes/CastleScene";
-import Dialog from "./scenes/DialogScene";
 import CastleTestScene from "./scenes/CastleTestScene";
 
 let game: Phaser.Game;
@@ -56,7 +53,7 @@ const GameManager = () => {
     );
 
     const availableLevels = {
-      castle: CastleScene,
+      castle: CastleTestScene,
     };
 
     const getLevel = async (): Promise<"castle"> => {
@@ -73,8 +70,6 @@ const GameManager = () => {
     const level = await getLevel();
     console.log("loading level: ", level);
     game.scene.add("currentLevel", availableLevels[level]);
-    game.scene.add("ui", UI);
-    game.scene.add("dialog", Dialog);
     game.scene.start("currentLevel");
   };
 

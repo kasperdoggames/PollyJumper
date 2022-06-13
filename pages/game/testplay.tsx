@@ -2,12 +2,11 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import dynamic from "next/dynamic";
 import Navbar from "../../components/Navbar";
-import LoadingScreen from "../../components/Loading";
 
 const TestPlay: NextPage = () => {
   // Dynamic Loader to wait before loaing up the phaser game
   const DynamicLoader = dynamic(
-    () => import("../../components/gameComponents/GameManager"),
+    () => import("../../components/gameComponents/testGameManager"),
     {
       loading: () => <p></p>,
       ssr: false,

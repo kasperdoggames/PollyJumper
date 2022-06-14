@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import "phaser";
 import CastleTestScene from "./scenes/CastleTestScene";
+import SpaceTestScene from "./scenes/SpaceTestScene";
 
 let game: Phaser.Game;
 
@@ -54,9 +55,10 @@ const GameManager = () => {
 
     const availableLevels = {
       castle: CastleTestScene,
+      space: SpaceTestScene,
     };
 
-    const getLevel = async (): Promise<"castle"> => {
+    const getLevel = async (): Promise<"castle" | "space"> => {
       try {
         const res = await fetch("/api/currentLevel");
         const data = await res.json();

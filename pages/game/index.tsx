@@ -25,6 +25,7 @@ const Home: NextPage = () => {
   const { data: account } = useAccount();
   const { activeChain } = useNetwork();
   const [hasNFT, setHasNFT] = useState(false);
+  const [checkWallet, setCheckWallet] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [gameTokenBalance, setGameTokenBalance] = useState<number | null>(null);
   const [gameAllowance, setGameAllowance] = useState<number | null>(null);
@@ -40,7 +41,12 @@ const Home: NextPage = () => {
   }, [account]);
 
   useEffect(() => {
-    init();
+    if (cryptAccount) {
+      init();
+      setCheckWallet(false);
+    } else {
+      setCheckWallet(true);
+    }
   }, [cryptAccount, hasNFT]);
 
   useEffect(() => {
@@ -67,12 +73,14 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     const getNftMetadata = async (ethereum: any, walletAddress: string) => {
-      const metadata = await getNFTTokenMetadata(ethereum, walletAddress);
-      console.log({ metadata });
-      setNftMetadata(metadata);
+      if (cryptAccount && cryptAccount.address) {
+        const metadata = await getNFTTokenMetadata(ethereum, walletAddress);
+        console.log({ metadata });
+        setNftMetadata(metadata);
+      }
     };
 
-    if (cryptAccount && cryptAccount.address) {
+    if (cryptAccount && cryptAccount.address && activeChain?.unsupported) {
       const { ethereum } = window;
       getNftMetadata(ethereum, cryptAccount.address);
     }
@@ -155,9 +163,13 @@ const Home: NextPage = () => {
 
   const init = async () => {
     setIsLoading(true);
-    await checkNFT();
-    await fetchPlayerTokenBalance();
-    await fetchPlayerTokenAllowance();
+    try {
+      await checkNFT();
+      await fetchPlayerTokenBalance();
+      await fetchPlayerTokenAllowance();
+    } catch (err) {
+      console.log(err);
+    }
     setIsLoading(false);
   };
 
@@ -384,7 +396,7 @@ const Home: NextPage = () => {
           <Navbar currentPageHref="game" />
           <div className="flex flex-col items-center h-screen bg-gray-700">
             <LoadingScreen isLoading={isLoading} />
-            {cryptAccount && !activeChain?.unsupported ? (
+            {!checkWallet && cryptAccount ? (
               <div>
                 {!hasNFT ? (
                   <div className="flex flex-col items-center justify-center py-8">

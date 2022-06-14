@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 import { getGameNFTTokenContract, toIpfsGatewayURL } from "../support/eth";
 import { getNFTTokenMetadata } from "../support/nftToken";
 
@@ -21,17 +21,28 @@ function classNames(...classes: string[]) {
 
 const Navbar = ({ currentPageHref }: { currentPageHref: string }) => {
   const { data: account } = useAccount();
+  const { activeChain } = useNetwork();
+
   const [avatarImageUrl, setAvatarImageUrl] = useState(DEFAULT_AVATAR_IMAGEURL);
   const [hasNFT, setHasNFT] = useState(false);
 
   useEffect(() => {
     const getNFTTokens = async () => {
+      if (activeChain?.unsupported) {
+        return;
+      }
       if (account && account.address) {
         const { ethereum } = window;
-        const metadata = await getNFTTokenMetadata(ethereum, account.address);
-        if (metadata) {
-          const imageUrl = toIpfsGatewayURL(metadata.image);
-          setAvatarImageUrl(imageUrl);
+        try {
+          const metadata = await getNFTTokenMetadata(ethereum, account.address);
+          if (metadata) {
+            const imageUrl = toIpfsGatewayURL(metadata.image);
+            setAvatarImageUrl(imageUrl);
+          }
+        } catch (err: any) {
+          if (err.code === "UNSUPPORTED_OPERATION") {
+            console.log("check signed into metamask");
+          }
         }
       } else {
         setAvatarImageUrl(DEFAULT_AVATAR_IMAGEURL);

@@ -93,7 +93,6 @@ export default class SocketClient {
         const player = this.scene.add.sprite(0, 0, "polly", "idle0001.png");
         player.setAlpha(0.5);
         player.setTintFill(0xffffff);
-        player.setDepth(-1);
         this.scene.otherPlayers.set(otherPlayer.playerId, player);
         this.scene.gameState = "running";
         this.scene.loading = false;

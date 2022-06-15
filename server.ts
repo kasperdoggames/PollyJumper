@@ -124,13 +124,17 @@ nextApp.prepare().then(() => {
   const checkContractGameLoop = () => {
     setTimeout(async () => {
       if (p2eGameContract) {
-        const checkUpkeep = await p2eGameContract.checkUpkeep([]);
-        const needToPerformUpkeep = checkUpkeep[0];
-        if (needToPerformUpkeep) {
-          console.log("Performing Upkeep");
-          const tx = await p2eGameContract.performUpkeep([]);
-          const receipt = await tx.wait();
-          console.log({ receipt });
+        try {
+          const checkUpkeep = await p2eGameContract.checkUpkeep([]);
+          const needToPerformUpkeep = checkUpkeep[0];
+          if (needToPerformUpkeep) {
+            console.log("Performing Upkeep");
+            const tx = await p2eGameContract.performUpkeep([]);
+            const receipt = await tx.wait();
+            console.log({ receipt });
+          }
+        } catch (err) {
+          console.log("Perform Upkeep Error: ", err);
         }
       }
 

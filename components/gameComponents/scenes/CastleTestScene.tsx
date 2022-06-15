@@ -161,6 +161,10 @@ export default class CastleTestScene extends Phaser.Scene {
           const finish = this.sound.get("bell");
           finish.play();
           this.player.sprite.anims.play("idle");
+          this.gameState = "end";
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
         }
         if (other.position.y > polly.position.y) {
           this.player.isTouchingGround = true;

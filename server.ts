@@ -256,8 +256,7 @@ nextApp.prepare().then(() => {
       try {
         if (roomSet) {
           gameRooms.delete(roomSet);
-          // roomSet = roomSet === "castle" ? "space" : "castle";
-          roomSet = "space";
+          roomSet = roomSet === "castle" ? "space" : "castle";
         }
         const leaderBoardData = Array.from(leaderboad).sort(
           ([, a], [, b]) => b.count - a.count
@@ -518,8 +517,7 @@ nextApp.prepare().then(() => {
     if (roomSet) {
       return res.json({ level: roomSet });
     }
-    // roomSet = lastRoom === "castle" ? "space" : "castle";
-    roomSet = "space";
+    roomSet = lastRoom === "castle" ? "space" : "castle";
     lastRoom = roomSet;
     res.json({ level: roomSet });
   });

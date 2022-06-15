@@ -1,31 +1,41 @@
 import "phaser";
-import { PlayerController } from "../playerController";
 import { Coins, CoinType } from "../elements/Coin";
 import { SpaceGas } from "../elements/SpaceGas";
-import { sharedInstance as events } from "../EventCenter";
+import { PlayerController } from "../playerController";
 import SocketClient from "../SocketClient";
+import { sharedInstance as events } from "../EventCenter";
 
 type gameState = "waiting" | "running" | "end";
 
-export default class SpaceTestScene extends Phaser.Scene {
+export default class SpaceScene extends Phaser.Scene {
   cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   player!: PlayerController;
   otherPlayers: Map<string, Phaser.GameObjects.Sprite> = new Map();
   music!: Phaser.Sound.BaseSound;
   bg_1!: Phaser.GameObjects.TileSprite;
+  coins!: Coins;
+  socketClient!: SocketClient;
   start!: { x: number; y: number };
   loading: boolean = true;
   timer!: Phaser.Time.TimerEvent;
-  coins!: Coins;
-  socketClient!: SocketClient;
   gameId!: string;
   level!: string;
   gameState: gameState = "waiting";
   emitMessages: { key: string; data: any }[] = [];
   dangerZone!: SpaceGas;
 
+  loadFromSocket() {
+    this.socketClient = new SocketClient(this);
+  }
+
   init() {
-    this.level = "spaceTest";
+    this.level = "space";
+    // Load UI
+    this.scene.launch("ui");
+    this.scene.launch("dialog");
+    // load up socketIO
+    this.loadFromSocket();
+    // init the keyboard inputs
     this.cursors = this.input.keyboard.createCursorKeys();
   }
 
@@ -62,13 +72,14 @@ export default class SpaceTestScene extends Phaser.Scene {
     this.load.image("bg_1", "/assets/space_level/space_bg.png");
 
     // load audio
-    this.load.audio("spaceMusic", "/assets/castle_level/castleMusic.mp3");
+    this.load.audio("castleMusic", "/assets/castle_level/castleMusic.mp3");
     this.load.audio("acidSplash", "/assets/castle_level/acidSplash.ogg");
     this.load.audio("coinPickup", "/assets/coinPickup.ogg");
     this.load.audio("bell", "/assets/bell.mp3");
   }
 
   create() {
+    // create coins class
     this.coins = new Coins(this);
     // create the tile map instance
     const map = this.make.tilemap({ key: "space_level" });
@@ -79,10 +90,11 @@ export default class SpaceTestScene extends Phaser.Scene {
 
     map.createLayer("ground2", tileset);
     map.createLayer("ground3", tileset).setDepth(-1);
+
     // set collisions based on custom value on the tilesheet data
     ground.setCollisionByProperty({ collides: true });
 
-    // testing parallax
+    // parallax
     this.bg_1 = this.add.tileSprite(0, 0, 0, 0, "bg_1");
     this.bg_1.setOrigin(0, 0);
     this.bg_1.setScrollFactor(0);
@@ -161,6 +173,13 @@ export default class SpaceTestScene extends Phaser.Scene {
           const finish = this.sound.get("bell");
           finish.play();
           this.player.sprite.anims.play("idle");
+          this.socketClient.counter = 10;
+          this.socketClient.socket.emit("gameUpdate", {
+            level: this.level,
+            gameId: this.gameId,
+            state: "end",
+            winner: true,
+          });
         }
         if (other.position.y > polly.position.y) {
           this.player.isTouchingGround = true;
@@ -222,14 +241,23 @@ export default class SpaceTestScene extends Phaser.Scene {
 
     events.on("dead", () => {
       console.log("player died");
+      this.socketClient.socket.emit("dead");
       // get players and sort based on highest point
+      this.otherPlayers.delete(this.socketClient.socket.id);
       const ordered = Array.from(this.otherPlayers.values()).sort(
         (a, b) => b.y - a.y
       );
 
-      if (ordered.length === 0) {
+      if (ordered.length === 0 && this.gameState === "running") {
+        // emit end game as all players dead
         console.log("end game request");
-        window.location.reload();
+        this.socketClient.counter = 10;
+        this.socketClient.socket.emit("gameUpdate", {
+          level: this.level,
+          gameId: this.gameId,
+          state: "end",
+          winner: false,
+        });
         return;
       }
       // follow highest player
@@ -250,12 +278,14 @@ export default class SpaceTestScene extends Phaser.Scene {
         }
       }
     }
+    if (this.loading || this.socketClient.counter >= 0) {
+      return;
+    }
     if (this.gameState !== "end") {
       // run through state for player controller
       this.player.stateMachine.step();
-      // update danger zone
-      this.dangerZone?.update();
-      // update parallax
+      // update acid
+      this.dangerZone.update();
       this.bg_1.tilePositionY = this.cameras.main.scrollY * 0.3;
     }
   }

@@ -58,15 +58,11 @@ const GameManager = () => {
       space: SpaceTestScene,
     };
 
-    const getLevel = async (): Promise<"castle" | "space"> => {
-      try {
-        const res = await fetch("/api/currentLevel");
-        const data = await res.json();
-        return data.level;
-      } catch (err) {
-        console.log(err);
-        throw err;
-      }
+    type LevelNames = "castle" | "space";
+
+    const getLevel = (): LevelNames => {
+      const levels: LevelNames[] = ["castle", "space"];
+      return levels[Math.floor(Math.random() * levels.length)];
     };
 
     const level = await getLevel();

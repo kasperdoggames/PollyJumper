@@ -62,8 +62,8 @@ export default class SpaceTestScene extends Phaser.Scene {
     this.load.image("bg_1", "/assets/space_level/space_bg.png");
 
     // load audio
-    this.load.audio("spaceMusic", "/assets/castle_level/castleMusic.mp3");
-    this.load.audio("acidSplash", "/assets/castle_level/acidSplash.ogg");
+    this.load.audio("spaceMusic", "/assets/space_level/castleMusic.mp3");
+    this.load.audio("acidSplash", "/assets/space_level/acidSplash.ogg");
     this.load.audio("coinPickup", "/assets/coinPickup.ogg");
     this.load.audio("bell", "/assets/bell.mp3");
   }

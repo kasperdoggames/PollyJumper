@@ -1,10 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import dynamic from "next/dynamic";
-import { useAccount, useNetwork } from "wagmi";
 import { Fragment, useEffect, useState } from "react";
-import { BaseProvider } from "@ethersproject/providers";
-import { GetAccountResult } from "@wagmi/core";
 import {
   getGameNFTTokenContract,
   getP2EGameContract,
@@ -17,13 +14,9 @@ import { P2EGAME_CONTRACT_ADDRESS } from "../../support/contract_addresses";
 import { Dialog, Transition } from "@headlessui/react";
 import { getNFTTokenMetadata } from "../../support/nftToken";
 import { toIpfsGatewayURL } from "../../support/eth";
+import { uauth } from "../../support/connectors";
 
 const Home: NextPage = () => {
-  const [cryptAccount, setCryptAccount] =
-    useState<GetAccountResult<BaseProvider>>();
-
-  const { data: account } = useAccount();
-  const { activeChain } = useNetwork();
   const [hasNFT, setHasNFT] = useState(false);
   const [checkWallet, setCheckWallet] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -33,21 +26,31 @@ const Home: NextPage = () => {
   const [showStakeCoolDialog, setShowStakeCoolDialog] = useState(false);
   const [showNFTMintedDialog, setShowNFTMintedDialog] = useState(false);
   const [nftMetadata, setNftMetadata] = useState<any>({});
+  const [walletAddress, setWalletAddress] = useState("");
 
   useEffect(() => {
-    if (account) {
-      setCryptAccount(account);
-    }
-  }, [account]);
+    const getUser = async () => {
+      try {
+        const user = await uauth.user();
+        if (user && user.sub && user.wallet_address) {
+          setWalletAddress(user.wallet_address);
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    };
+
+    getUser();
+  }, [uauth]);
 
   useEffect(() => {
-    if (cryptAccount) {
+    if (walletAddress) {
       init();
       setCheckWallet(false);
     } else {
       setCheckWallet(true);
     }
-  }, [cryptAccount, hasNFT]);
+  }, [walletAddress, hasNFT]);
 
   useEffect(() => {
     const { ethereum } = window;
@@ -60,7 +63,7 @@ const Home: NextPage = () => {
       "Transfer",
       (from: string, to: string, tokenId: number) => {
         console.log("Transfer", from, to, tokenId);
-        if (to === cryptAccount?.address) {
+        if (to === walletAddress) {
           setShowNFTMintedDialog(true);
         }
       }
@@ -69,22 +72,22 @@ const Home: NextPage = () => {
     return () => {
       gameNFTTokenContract.removeAllListeners("Transfer");
     };
-  }, [cryptAccount]);
+  }, [walletAddress]);
 
   useEffect(() => {
     const getNftMetadata = async (ethereum: any, walletAddress: string) => {
-      if (cryptAccount && cryptAccount.address) {
+      if (walletAddress) {
         const metadata = await getNFTTokenMetadata(ethereum, walletAddress);
         console.log({ metadata });
         setNftMetadata(metadata);
       }
     };
 
-    if (cryptAccount && cryptAccount.address && activeChain?.unsupported) {
+    if (walletAddress) {
       const { ethereum } = window;
-      getNftMetadata(ethereum, cryptAccount.address);
+      getNftMetadata(ethereum, walletAddress);
     }
-  }, [cryptAccount, hasNFT]);
+  }, [walletAddress, hasNFT]);
 
   // Dynamic Loader to wait before loaing up the phaser game
   const DynamicLoader = dynamic(
@@ -123,9 +126,9 @@ const Home: NextPage = () => {
       return;
     }
     const contract = getGameNFTTokenContract(ethereum);
-    if (contract && cryptAccount?.address) {
+    if (contract && walletAddress) {
       try {
-        const tokenCount = await contract.balanceOf(cryptAccount.address);
+        const tokenCount = await contract.balanceOf(walletAddress);
         if (tokenCount.toNumber() > 0) {
           setHasNFT(true);
         }
@@ -138,8 +141,8 @@ const Home: NextPage = () => {
   const fetchPlayerTokenBalance = async () => {
     const { ethereum } = window;
     const gameTokenContract = getGameTokenContract(ethereum);
-    if (gameTokenContract && cryptAccount) {
-      const balance = await gameTokenContract.balanceOf(cryptAccount.address);
+    if (gameTokenContract && walletAddress) {
+      const balance = await gameTokenContract.balanceOf(walletAddress);
       let res = Number(ethers.utils.formatUnits(balance, 18));
       res = Math.round(res * 1e4) / 1e4;
       setGameTokenBalance(res);
@@ -149,9 +152,9 @@ const Home: NextPage = () => {
   const fetchPlayerTokenAllowance = async () => {
     const { ethereum } = window;
     const gameTokenContract = getGameTokenContract(ethereum);
-    if (gameTokenContract && cryptAccount) {
+    if (gameTokenContract && walletAddress) {
       const allowance = await gameTokenContract.allowance(
-        cryptAccount.address,
+        walletAddress,
         P2EGAME_CONTRACT_ADDRESS
       );
       let res = Number(ethers.utils.formatUnits(allowance, 18));
@@ -396,7 +399,7 @@ const Home: NextPage = () => {
           <Navbar currentPageHref="game" />
           <div className="flex flex-col items-center h-screen bg-gray-700">
             <LoadingScreen isLoading={isLoading} />
-            {!checkWallet && cryptAccount ? (
+            {!checkWallet && walletAddress ? (
               <div>
                 {!hasNFT ? (
                   <div className="flex flex-col items-center justify-center py-8">

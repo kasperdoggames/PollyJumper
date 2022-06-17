@@ -2,14 +2,30 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Navbar from "../components/Navbar";
 import { getNFTTokenMetadata } from "../support/nftToken";
-import { useAccount } from "wagmi";
 import { useEffect, useState } from "react";
 import { toIpfsGatewayURL } from "../support/eth";
 import Footer from "../components/Footer";
+import { uauth } from "../support/connectors";
 
 const Cool: NextPage = () => {
-  const { data: account } = useAccount();
   const [nftMetadata, setNftMetadata] = useState<any>({});
+  const [walletAddress, setWalletAddress] = useState("");
+
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const user = await uauth.user();
+        console.log({ user });
+        if (user && user.wallet_address) {
+          setWalletAddress(user.wallet_address);
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    };
+
+    getUser();
+  }, [uauth]);
 
   useEffect(() => {
     const getNftMetadata = async (ethereum: any, walletAddress: string) => {
@@ -18,11 +34,14 @@ const Cool: NextPage = () => {
       setNftMetadata(metadata);
     };
 
-    if (account && account.address) {
+    if (walletAddress) {
       const { ethereum } = window;
-      getNftMetadata(ethereum, account.address);
+      getNftMetadata(ethereum, walletAddress);
     }
-  }, [account]);
+  }, [walletAddress]);
+
+  console.log({ walletAddress });
+  console.log({ uauth });
 
   return (
     <div className="bg-gray-800">

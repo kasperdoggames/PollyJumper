@@ -6,7 +6,6 @@ export const getNFTTokenMetadata = async (
 ) => {
   let metadata = null;
   if (walletAddress) {
-    console.log("address", walletAddress);
     const gameNFTTokenContract = getGameNFTTokenContract(ethereum);
     if (gameNFTTokenContract) {
       const nftTokens = await gameNFTTokenContract.walletOfOwner(walletAddress);

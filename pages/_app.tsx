@@ -1,42 +1,18 @@
 import "../styles/globals.css";
-import "@rainbow-me/rainbowkit/styles.css";
-import {
-  apiProvider,
-  configureChains,
-  RainbowKitProvider,
-  getDefaultWallets,
-  darkTheme,
-} from "@rainbow-me/rainbowkit";
-import { createClient, chain, WagmiProvider } from "wagmi";
-import type { AppProps } from "next/app";
+import { Web3Provider } from "@ethersproject/providers";
+import { Web3ReactProvider } from "@web3-react/core";
 
-const { provider, chains } = configureChains(
-  [chain.polygonMumbai],
-  [apiProvider.alchemy(process.env.ALCHEMY_ID), apiProvider.fallback()]
-);
+const getLibrary = (provider) => {
+  const library = new Web3Provider(provider);
+  library.pollingInterval = 12000;
+  return library;
+};
 
-const { connectors } = getDefaultWallets({
-  appName: "CryptoJumper Tester",
-  chains,
-});
-
-const wagmiClient = createClient({
-  autoConnect: true,
-  connectors,
-  provider,
-});
-
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps }) {
   return (
-    <WagmiProvider client={wagmiClient}>
-      <RainbowKitProvider
-        chains={chains}
-        coolMode={true}
-        theme={darkTheme({ borderRadius: "small" })}
-      >
-        <Component {...pageProps} />
-      </RainbowKitProvider>
-    </WagmiProvider>
+    <Web3ReactProvider getLibrary={getLibrary}>
+      <Component {...pageProps} />
+    </Web3ReactProvider>
   );
 }
 
